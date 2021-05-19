@@ -8,7 +8,7 @@ import sys, random, string
 leafFileName  = 'leaf.txt'
 if len(sys.argv) > 1: leafFileName = sys.argv[1]
 else:
-    print 'usage: python PompTree.py leaf.txt'
+    print ('usage: python PompTree.py leaf.txt')
     quit()
 leafFile = open(leafFileName, 'r')
 
@@ -24,11 +24,11 @@ class node:
         if node.theDepth > node.maxDepth: node.maxDepth = node.theDepth
         node.theDepth += 1
         numChildren = random.randint(1,10)
-        while (numChildren and node.theDepth < 10 and node.nodeCount < 1000):
+        while (numChildren and node.theDepth < 10 and node.nodeCount < 100):
             newItem = random.choice(['dict', 'array', 'array', 'leaf', 'leaf', 'leaf', 'leaf'])
-            if newItem is 'dict': newItem = dBranch()
-            elif newItem is 'array': newItem = aBranch()
-            elif newItem is 'leaf': newItem = leaf()
+            if newItem == 'dict': newItem = dBranch()
+            elif newItem == 'array': newItem = aBranch()
+            elif newItem == 'leaf': newItem = leaf()
             newItem.Populate()
             self.AddToList(newItem)
             numChildren -= 1
@@ -52,14 +52,14 @@ class dBranch(node):
 
     # serialize as Json text on console
     def Express(self):
-        print '{',
+        print ('{', end='')
         first = True
-        for key, value in self.dList.iteritems():
+        for key, value in self.dList.items():
             if first: first = False
-            else: print ',',
-            print '"{0}":'.format(key),
+            else: print (',', end='')
+            print ('"{0}":'.format(key), end='')
             value.Express(),
-        print '}',
+        print ('}', end='')
 
 # subclass for array branch nodes
 class aBranch(node):
@@ -73,13 +73,13 @@ class aBranch(node):
 
     # serialize as Json text on console
     def Express(self):
-        print '[',
+        print ('[', end='')
         first = True
         for item in self.aList:
             if first: first = False
-            else: print ',',
+            else: print (',', end='')
             item.Express(),
-        print ']',
+        print (']', end='')
 
 # subclass for tree leaf nodes
 class leaf(node):
@@ -98,17 +98,18 @@ class leaf(node):
 
     # serialize as Json text on console
     def Express(self):
-        if self.content is None: print 'null',
-        elif self.content is True: print 'true',
-        elif self.content is False: print 'false',
-        else: print self.content,
+        if self.content == None: print ('null', end='')
+        elif self.content == True: print ('true', end='')
+        elif self.content == False: print ('false', end='')
+        else: print (self.content, end='')
 
 # build random tree out of objects, arrays, and leaf nodes
 listHead = random.choice(['dict', 'array'])
-if listHead is 'dict': listHead = dBranch()
-elif listHead is 'array': listHead = aBranch()
+if listHead == 'dict': listHead = dBranch()
+elif listHead == 'array': listHead = aBranch()
 listHead.Populate()
 
 # express random tree as Json text
 listHead.Express()
+print ()
 leafFile.close()
