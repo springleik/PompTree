@@ -51,15 +51,15 @@ def locatePair(key, value, data):
         for m in data:
             for n in locatePair(key, value, m): yield n
 
-# helper function for compareTree()
+# helper function for treeCompare()
 def leafCompare (ref, tst, errs):
     if ref == tst: return True
-    errs += 'Items mismatch: {}, {}.'.format(ref, tst)
+    errs.append ('Items mismatch: {}, {}.'.format(ref, tst))
     return False
 
 # recursively test JSON tree structures for equality
 # return a true/false result, and what differed if false
-def compareTree (ref, tst, errs, path):
+def treeCompare (ref, tst, errs, path):
     # try to match dictionary keys
     if isinstance (ref, dict) and isinstance (tst, dict):
         if len(tst) < len(ref):
@@ -69,7 +69,7 @@ def compareTree (ref, tst, errs, path):
             if key not in tst:
                 errs.append ('Missing key: {}.'.format(key))
                 return False
-            elif not compareTree (ref[key], tst[key], errs, path):
+            elif not treeCompare (ref[key], tst[key], errs, path):
                 path.insert (0, '"{}"'.format(key))
                 return False
         return True
@@ -81,7 +81,7 @@ def compareTree (ref, tst, errs, path):
             return False
         for n, r in enumerate(ref):
             t = tst[n]
-            if not compareTree (r, t, errs, path):
+            if not treeCompare (r, t, errs, path):
                 path.insert (0, '[{}]'.format(n))
                 return False
         return True
@@ -102,7 +102,7 @@ def compareTree (ref, tst, errs, path):
 # locate instances of subtree by recursive descent
 def locateTree(sub, data, match):
     # check for match at current level
-    if compareTree (sub, data, errs, path):
+    if treeCompare (sub, data, errs, path):
         match.append(data)
 
     # check for matches beneath
@@ -117,6 +117,6 @@ def locateTree(sub, data, match):
 # clear error and path strings, then compare input files
 errs = []
 path = []
-print          (' Match: {}'.format (compareTree (refData, tstData, errs, path)))
+print          (' Match: {}'.format (treeCompare (refData, tstData, errs, path)))
 if errs: print (' Error: {}'.format (' '.join(errs)))
 if path: print ('  Path: {}'.format (' '.join(path)))
