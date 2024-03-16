@@ -54,7 +54,7 @@ def locatePair(key, value, data):
 # helper function for treeCompare()
 def leafCompare (ref, tst, errs):
     if ref == tst: return True
-    errs.append ('Items mismatch: {}, {}.'.format(ref, tst))
+    errs.append ('Items mismatch: {}, {}'.format(ref, tst))
     return False
 
 # recursively test JSON tree structures for equality
@@ -63,11 +63,11 @@ def treeCompare (ref, tst, errs, path):
     # try to match dictionary keys
     if isinstance (ref, dict) and isinstance (tst, dict):
         if len(tst) < len(ref):
-            errs.append ('Not enough keys in dict: {}.'.format(len(tst)))
+            errs.append ('Not enough keys in dict: {}'.format(len(tst)))
             return False
         for key in ref:
             if key not in tst:
-                errs.append ('Missing key: {}.'.format(key))
+                errs.append ('Missing key: {}'.format(key))
                 return False
             elif not treeCompare (ref[key], tst[key], errs, path):
                 path.insert (0, '"{}"'.format(key))
@@ -77,7 +77,7 @@ def treeCompare (ref, tst, errs, path):
     # try to match list elements
     elif isinstance (ref, list) and isinstance (tst, list):
         if len(tst) < len(ref):
-            errs.append ('Not enough items in list: {}.'.format(len(tst)))
+            errs.append ('Not enough items in list: {}'.format(len(tst)))
             return False
         for n, r in enumerate(ref):
             t = tst[n]
@@ -97,7 +97,7 @@ def treeCompare (ref, tst, errs, path):
         return leafCompare (ref, tst, errs)
 
     # this point reached if types are different or unknown
-    else: errs.append ('Type error: {}, {}.'.format(type(ref), type(tst))); return False
+    else: errs.append ('Type error: {}, {}'.format(type(ref), type(tst))); return False
 
 # locate instances of subtree by recursive descent
 def locateTree(sub, data, match):
