@@ -4,7 +4,7 @@
 import json, sys, math
 
 # ---------------- Library Functions ---------------- #
-# locate key in data, return generator for values
+# locate key in data, return generator for value
 def locateKey(key, data):
     if isinstance(data, dict):
         if key in data: yield data[key]
@@ -15,7 +15,7 @@ def locateKey(key, data):
             for n in locateKey(key, m): yield n
 
 # --------------------------------------------------- #
-# locate key/value pair in data, return generator for containing objects
+# locate key/value pair in data, return generator for containing object
 def locatePair(key, value, data):
     if isinstance(data, dict):
         if (key in data) and (data[key] == value): yield data
@@ -28,6 +28,7 @@ def locatePair(key, value, data):
 # --------------------------------------------------- #
 # recursively test JSON tree structures for equality
 # return a true/false result, and what differed if false
+# pass in an error list if you need a detailed report
 def treeCompare (ref, tst, error = [], path = []):
     # try to match dictionary keys
     if isinstance (ref, dict) and isinstance (tst, dict):
@@ -65,7 +66,7 @@ def treeCompare (ref, tst, error = [], path = []):
         return leafCompare (ref, tst, error, path)
 
     # this point reached if types are different or unknown
-    else: error.append ({'Type error':[type(ref), type(tst)],'path':path}); return False
+    else: error.append ({'Type error':[str(type(ref)), str(type(tst))],'path':path}); return False
 
 # helper function for treeCompare
 def leafCompare (ref, tst, error, path):

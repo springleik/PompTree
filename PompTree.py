@@ -23,8 +23,8 @@ class node:
     def Populate(self):
         if node.theDepth > node.maxDepth: node.maxDepth = node.theDepth
         node.theDepth += 1
-        numChildren = random.randint(1,10)
-        while (numChildren and node.theDepth < 10 and node.nodeCount < 100):
+        numChildren = random.randint(1,100)
+        while (numChildren and node.theDepth < 100 and node.nodeCount < 100000):
             newItem = random.choice(['dict', 'array', 'array', 'leaf', 'leaf', 'leaf', 'leaf'])
             if newItem == 'dict': newItem = dBranch()
             elif newItem == 'array': newItem = aBranch()
