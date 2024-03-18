@@ -28,7 +28,7 @@ def locatePair(key, value, data):
 # --------------------------------------------------- #
 # recursively test JSON tree structures for equality
 # return a true/false result, and what differed if false
-def treeCompare (ref, tst, error, path):
+def treeCompare (ref, tst, error = [], path = []):
     # try to match dictionary keys
     if isinstance (ref, dict) and isinstance (tst, dict):
         if len(tst) < len(ref):
@@ -77,8 +77,7 @@ def leafCompare (ref, tst, error, path):
 # locate instances of subtree by recursive descent
 def locateTree(sub, data, match):
     # check for match at current level
-    if treeCompare (sub, data, error, path):
-        match.append(data)
+    if treeCompare (sub, data): match.append(data)
 
     # check for matches beneath
     if isinstance(data, dict):
@@ -98,10 +97,10 @@ def main():
         refFileName = args[1]
         tstFileName = args[2]
     else:
-        print (' Usage: python3 TreeCompare.py Ref.json Tst.json', file = sys.stderr)
+        print ('Usage: python3 TreeCompare.py Ref.json Tst.json', file = sys.stderr)
         sys.exit (-1)
     # parse json input files
-    print ('   Ref: {}, Tst: {}'.format(refFileName, tstFileName))
+    print ('Ref: {}, Tst: {}'.format(refFileName, tstFileName))
     try:
         with open(refFileName, 'r') as refFile:
             refData = json.load(refFile)
@@ -114,11 +113,11 @@ def main():
     except ValueError as e:
         print ('Tst file {} is not valid JSON'.format(tstFileName), file = sys.stderr)
         sys.exit (-4)
-    path = []
-    errs = [{'compare':False}]
-    errs[0]['compare'] = treeCompare(refData, tstData, errs, path)
-    print (json.dumps(errs, indent = 2))
-    sys.exit(-2)
+    errs = []
+    if not treeCompare(refData, tstData, errs):
+        print (json.dumps(errs, indent = 2))
+        sys.exit(-2)
+    print ('Files match.')
 
 # --------------------------------------------------- #
 # this doesn't run, when invoked as a library
