@@ -3,34 +3,7 @@
 # M. Williamsen  26 November 2023
 import json, sys, math
 
-# //////////////// Command Line Args \\\\\\\\\\\\\\\\ #
-# check command line args, expect two file names for ref and test file
-args = sys.argv
-refFileName = 'Ref.json'
-tstFileName = 'Tst.json'
-if 2 < len(args):
-    refFileName = args[1]
-    tstFileName = args[2]
-else:
-    print (' Usage: python3 TreeCompare.py Ref.json Tst.json', file = sys.stderr)
-    sys.exit (-1)
-
-# parse json input files
-print ('   Ref: {}, Tst: {}'.format(refFileName, tstFileName))
-try:
-    with open(refFileName, 'r') as refFile:
-        refData = json.load(refFile)
-except ValueError as e:
-    print ('Reference file {} is not valid JSON'.format(refFileName), file = sys.stderr)
-    sys.exit (-2)
-try:
-    with open(tstFileName, 'r') as tstFile:
-        tstData = json.load(tstFile)
-except ValueError as e:
-    print ('Test file {} is not valid JSON'.format(tstFileName), file = sys.stderr)
-    sys.exit (-3)
-
-# //////////////// Library Functions \\\\\\\\\\\\\\\\ #
+# ---------------- Library Functions ---------------- #
 # locate key in data, return generator for values
 def locateKey(key, data):
     if isinstance(data, dict):
@@ -41,6 +14,7 @@ def locateKey(key, data):
         for m in data:
             for n in locateKey(key, m): yield n
 
+# --------------------------------------------------- #
 # locate key/value pair in data, return generator for containing objects
 def locatePair(key, value, data):
     if isinstance(data, dict):
@@ -51,58 +25,59 @@ def locatePair(key, value, data):
         for m in data:
             for n in locatePair(key, value, m): yield n
 
-# helper function for treeCompare()
-def leafCompare (ref, tst, errs):
-    if ref == tst: return True
-    errs.append ('Items mismatch: {}, {}'.format(ref, tst))
-    return False
-
+# --------------------------------------------------- #
 # recursively test JSON tree structures for equality
 # return a true/false result, and what differed if false
-def treeCompare (ref, tst, errs, path):
+def treeCompare (ref, tst, error, path):
     # try to match dictionary keys
     if isinstance (ref, dict) and isinstance (tst, dict):
         if len(tst) < len(ref):
-            errs.append ('Not enough keys in dict: {}'.format(len(tst)))
+            error.append ({'Not enough keys in dict':len(tst),'path':path})
             return False
+        noErrs = True
         for key in ref:
             if key not in tst:
-                errs.append ('Missing key: {}'.format(key))
-                return False
-            elif not treeCompare (ref[key], tst[key], errs, path):
-                path.insert (0, '"{}"'.format(key))
-                return False
-        return True
+                error.append ({'Missing key':key,'path':path})
+                noErrs = False
+            elif not treeCompare (ref[key], tst[key], error, path + [key]):
+                noErrs = False
+        return noErrs
 
     # try to match list elements
     elif isinstance (ref, list) and isinstance (tst, list):
         if len(tst) < len(ref):
-            errs.append ('Not enough items in list: {}'.format(len(tst)))
+            error.append ({'Not enough items in list':len(tst),'path':path})
             return False
+        noErrs = True
         for n, r in enumerate(ref):
-            t = tst[n]
-            if not treeCompare (r, t, errs, path):
-                path.insert (0, '[{}]'.format(n))
-                return False
-        return True
+            if not treeCompare (r, tst[n], error, path + [n]):
+                noErrs = False
+        return noErrs
 
     # try to match simple types
     elif ref is None and tst is None: return True
-    elif isinstance (ref, int)   and isinstance (tst, int):  return leafCompare (ref, tst, errs)
-    elif isinstance (ref, str)   and isinstance (tst, str):  return leafCompare (ref, tst, errs)
-    elif isinstance (ref, bool)  and isinstance (tst, bool): return leafCompare (ref, tst, errs)
+    elif isinstance (ref, int)   and isinstance (tst, int):  return leafCompare (ref, tst, error, path)
+    elif isinstance (ref, str)   and isinstance (tst, str):  return leafCompare (ref, tst, error, path)
+    elif isinstance (ref, bool)  and isinstance (tst, bool): return leafCompare (ref, tst, error, path)
     elif isinstance (ref, float) and isinstance (tst, float):
         if math.isnan(ref)   and math.isnan(tst): return True
         elif math.isinf(ref) and math.isinf(tst): return True
-        return leafCompare (ref, tst, errs)
+        return leafCompare (ref, tst, error, path)
 
     # this point reached if types are different or unknown
-    else: errs.append ('Type error: {}, {}'.format(type(ref), type(tst))); return False
+    else: error.append ({'Type error':[type(ref), type(tst)],'path':path}); return False
 
+# helper function for treeCompare
+def leafCompare (ref, tst, error, path):
+    if ref == tst: return True
+    error.append ({'Items mismatch':[ref, tst],'path':path})
+    return False
+
+# --------------------------------------------------- #
 # locate instances of subtree by recursive descent
 def locateTree(sub, data, match):
     # check for match at current level
-    if treeCompare (sub, data, errs, path):
+    if treeCompare (sub, data, error, path):
         match.append(data)
 
     # check for matches beneath
@@ -113,10 +88,40 @@ def locateTree(sub, data, match):
         for value in data:
             locateTree (sub, value, match)
 
-# //////////////// Main Entry Point \\\\\\\\\\\\\\\\ #
-# clear error and path strings, then compare input files
-errs = []
-path = []
-print          (' Match: {}'.format (treeCompare (refData, tstData, errs, path)))
-if errs: print (' Error: {}'.format (' '.join(errs)))
-if path: print ('  Path: {}'.format (' '.join(path)))
+# ---------------- Main Entry Point ---------------- #
+def main():
+    # check command line args, expect two file names for ref and test file
+    args = sys.argv
+    refFileName = 'Ref.json'
+    tstFileName = 'Tst.json'
+    if 2 < len(args):
+        refFileName = args[1]
+        tstFileName = args[2]
+    else:
+        print (' Usage: python3 TreeCompare.py Ref.json Tst.json', file = sys.stderr)
+        sys.exit (-1)
+    # parse json input files
+    print ('   Ref: {}, Tst: {}'.format(refFileName, tstFileName))
+    try:
+        with open(refFileName, 'r') as refFile:
+            refData = json.load(refFile)
+    except ValueError as e:
+        print ('Ref file {} is not valid JSON'.format(refFileName), file = sys.stderr)
+        sys.exit (-3)
+    try:
+        with open(tstFileName, 'r') as tstFile:
+            tstData = json.load(tstFile)
+    except ValueError as e:
+        print ('Tst file {} is not valid JSON'.format(tstFileName), file = sys.stderr)
+        sys.exit (-4)
+    path = []
+    errs = [{'compare':False}]
+    errs[0]['compare'] = treeCompare(refData, tstData, errs, path)
+    print (json.dumps(errs, indent = 2))
+    sys.exit(-2)
+
+# --------------------------------------------------- #
+# this doesn't run, when invoked as a library
+if __name__ == '__main__':
+    main()
+    sys.exit(0)
