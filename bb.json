@@ -1,2 +1,0 @@
-{"differ":[123, 2.34, true, "one", Infinity, NaN, -Infinity, null, Infinity],
-"same":[1234, 2.346, false, "two", -Infinity, NaN, Infinity, null, NaN]}
