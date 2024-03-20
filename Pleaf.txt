@@ -26,3 +26,6 @@ null
 "three"
 "four"
 "five"
+Infinity
+-Infinity
+NaN
