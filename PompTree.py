@@ -1,5 +1,8 @@
-#!/usr/bin/env python
-# Json text generator, for creating random trees
+#!/usr/bin/env python3
+# PompTree.py is a JSON text generator,
+# for creating random trees
+# M. Williamsen  26 November 2023
+
 # http://www.williamsonic.com/CompTree/
 
 import sys, random, string

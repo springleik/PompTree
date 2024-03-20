@@ -1,6 +1,7 @@
-#!/usr/bin/python3
-# TreeCompare.py JSON directional tree comparison
+#!/usr/bin/env python3
+# CompTree.py JSON directional tree comparison
 # M. Williamsen  26 November 2023
+
 import json, sys, math
 
 # ---------------- Library Functions ---------------- #

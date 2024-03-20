@@ -1,17 +1,16 @@
-# --------------------------------------------
-# Test.py imports CompareTree.py as a library
-# and verifies correct operation
-# M. Williamsen, FlexLink
-# 18 March 2024
+#!/usr/bin/env python3
+# CompTest.py imports CompTree.py as a
+# library, and verifies correct operation
+# M. Williamsen  26 November 2023
 
 import json, sys
-import CompareTree as ct
+import CompTree as ct
 
 
 # --------------------------------------------
 # open input files used for the following tests
 try:
-    tstFileName = 'Test Files/cc.json'
+    tstFileName = 'TestFiles/cc.json'
     with open(tstFileName, 'r') as tstFile:
         tstData = json.load(tstFile)
 except ValueError as e:
@@ -19,7 +18,7 @@ except ValueError as e:
     sys.exit (-1)
 
 try:
-    refFileName = 'Test Files/dd.json'
+    refFileName = 'TestFiles/dd.json'
     with open(refFileName, 'r') as refFile:
         tstData = json.load(refFile)
 except ValueError as e:
@@ -68,7 +67,7 @@ print (',',json.dumps(list(match)))
 # --------------------------------------------
 # open more test files for following tests
 try:
-    tstFileName = 'Test Files/aa.json'
+    tstFileName = 'TestFiles/aa.json'
     with open(tstFileName, 'r') as tstFile:
         tstData = json.load(tstFile)
 except ValueError as e:
@@ -76,7 +75,7 @@ except ValueError as e:
     sys.exit (-1)
 
 try:
-    refFileName = 'Test Files/bb.json'
+    refFileName = 'TestFiles/bb.json'
     with open(refFileName, 'r') as refFile:
         refData = json.load(refFile)
 except ValueError as e:
