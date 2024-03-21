@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-# CompTree.py JSON directional tree comparison
+# CompTree.py directional JSON tree comparison
 # M. Williamsen  26 November 2023
-
 import json, sys, math
 
 # ---------------- Library Functions ---------------- #
-# locate key in data, return generator for value
+# locate key in data
+# return generator for value
 def locateKey(key, data):
     if isinstance(data, dict):
         if key in data: yield data[key]
@@ -16,7 +16,8 @@ def locateKey(key, data):
             for n in locateKey(key, m): yield n
 
 # --------------------------------------------------- #
-# locate key/value pair in data, return generator for containing object
+# locate key-value pair in data
+# return generator for containing object
 def locatePair(key, value, data):
     if isinstance(data, dict):
         if (key in data) and (data[key] == value): yield data
@@ -28,8 +29,8 @@ def locatePair(key, value, data):
 
 # --------------------------------------------------- #
 # recursively test JSON tree structures for equality
-# return a true/false result, and what differed if false
-# pass in an error list if you need a detailed report
+# return true if matched, false if not
+# pass in an error list to obtain detailed report
 def treeCompare (ref, tst, error = [], path = []):
     # try to match dictionary keys
     if isinstance (ref, dict) and isinstance (tst, dict):
@@ -76,7 +77,8 @@ def leafCompare (ref, tst, error, path):
     return False
 
 # --------------------------------------------------- #
-# locate instances of subtree by recursive descent
+# locate instances of a subtree by recursive descent
+# return list of matches
 def locateTree(sub, data, match = []):
     # check for match at current level
     if treeCompare (sub, data): match.append(data)
