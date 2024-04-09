@@ -2,11 +2,11 @@
 # CompTest.py imports CompTree.py as a
 # library, to verify correct operation
 # M. Williamsen  26 November 2023
-import json, sys, datetime
+import json, sys, datetime, os
 import CompTree as ct
 
 # --------------------------------------------
-# open test input files for following tests
+# open test input and output files
 try:
     tstFileName = 'TestFiles/aa.json'
     with open(tstFileName, 'r') as tstFile:
@@ -23,26 +23,33 @@ except ValueError as e:
     print ('Ref file {} is not valid JSON'.format(refFileName), file = sys.stderr)
     sys.exit (-1)
     
+try:
+    outFileName = 'Tst.json'
+    outFile = open(outFileName, 'w')
+except IOError as e:
+    print ('Failed to open output file: {}'.format(outFileName), file = sys.stderr)
+    sys.exit(-1)
+
 # place timestamp at start of file
-print ('{{"timestamp":"{}"'.format(datetime.datetime.now()))
+print ('{{"timestamp":"{}"'.format(datetime.datetime.now()), file = outFile)
 
 # --------------------------------------------
 # treeCompare
 errors = []
 ct.treeCompare(tstData, refData, errors)
-print (',"treeCompare1":{}'.format(json.dumps(errors)))
+print (',"treeCompare1":{}'.format(json.dumps(errors)), file = outFile)
 
 errors = []
 ct.treeCompare(refData, tstData, errors)
-print (',"treeCompare2":{}'.format(json.dumps(errors)))
+print (',"treeCompare2":{}'.format(json.dumps(errors)), file = outFile)
 
 errors = []
 ct.treeCompare([], tstData, errors)
-print (',"treeCompare3":{}'.format(json.dumps(errors)))
+print (',"treeCompare3":{}'.format(json.dumps(errors)), file = outFile)
 
 errors = []
 ct.treeCompare({}, tstData, errors)
-print (',"treeCompare4":{}'.format(json.dumps(errors)))
+print (',"treeCompare4":{}'.format(json.dumps(errors)), file = outFile)
 
 # --------------------------------------------
 # open test input files for following tests
@@ -57,18 +64,18 @@ except ValueError as e:
 # --------------------------------------------
 # locateKey
 rslt = ct.locateKey('one', tstData)
-print (',"locateKey1":{}'.format(json.dumps(list(rslt))))
+print (',"locateKey1":{}'.format(json.dumps(list(rslt))), file = outFile)
 
 rslt = ct.locateKey('five', tstData)
-print (',"locateKey2":{}'.format(json.dumps(list(rslt))))
+print (',"locateKey2":{}'.format(json.dumps(list(rslt))), file = outFile)
 
 # --------------------------------------------
 # locatePair
 rslt = ct.locatePair('one', 1, tstData)
-print (',"locatePair1":{}'.format(json.dumps(list(rslt))))
+print (',"locatePair1":{}'.format(json.dumps(list(rslt))), file = outFile)
 
 rslt = ct.locatePair('five', 'aa', tstData)
-print (',"locatePair2":{}'.format(json.dumps(list(rslt))))
+print (',"locatePair2":{}'.format(json.dumps(list(rslt))), file = outFile)
 
 # --------------------------------------------
 # locateTree
@@ -79,7 +86,7 @@ sub = {
       }
 match = []
 ct.locateTree(sub, tstData, match)
-print (',"locateTree1":{}'.format(json.dumps(list(match))))
+print (',"locateTree1":{}'.format(json.dumps(list(match))), file = outFile)
 
 sub = {
         "three": 23,
@@ -87,7 +94,7 @@ sub = {
       }
 match = []
 ct.locateTree(sub, tstData, match)
-print (',"locateTree2":{}'.format(json.dumps(list(match))))
+print (',"locateTree2":{}'.format(json.dumps(list(match))), file = outFile)
 
 sub = {
         "three": 24,
@@ -95,4 +102,10 @@ sub = {
       }
 match = []
 ct.locateTree(sub, tstData, match)
-print (',"locateTree3":{}}}'.format(json.dumps(list(match))))
+print (',"locateTree3":{}}}'.format(json.dumps(list(match))), file = outFile)
+
+# --------------------------------------------
+# Compare test output file with reference file
+# Test passes if console shows an empty array
+outFile.close()
+os.system('python3 CompTree.py Ref.json Tst.json')
