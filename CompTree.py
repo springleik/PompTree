@@ -34,6 +34,8 @@ def locatePair(key, value, data):
 # returns true if matched, false if not
 # pass in an error list to obtain detailed report
 # do not pass in a path list, the error list contains path info 
+# note this quirk of Python, that default objects like
+# lists get reused as if they were static!
 def treeCompare (ref, tst, error = None, path = None):
     if error is None: error = []
     if path is None: path = []
