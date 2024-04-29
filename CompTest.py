@@ -36,19 +36,19 @@ print ('{{"timestamp":"{}"'.format(datetime.datetime.now()), file = outFile)
 # --------------------------------------------
 # treeCompare
 errors = []
-ct.treeCompare(tstData, refData, errors)
+print (ct.treeCompare(tstData, refData, errors))
 print (',"treeCompare1":{}'.format(json.dumps(errors)), file = outFile)
 
 errors = []
-ct.treeCompare(refData, tstData, errors)
+print (ct.treeCompare(refData, tstData, errors))
 print (',"treeCompare2":{}'.format(json.dumps(errors)), file = outFile)
 
 errors = []
-ct.treeCompare([], tstData, errors)
+print (ct.treeCompare([], tstData, errors))
 print (',"treeCompare3":{}'.format(json.dumps(errors)), file = outFile)
 
 errors = []
-ct.treeCompare({}, tstData, errors)
+print (ct.treeCompare({}, tstData, errors))
 print (',"treeCompare4":{}'.format(json.dumps(errors)), file = outFile)
 
 # --------------------------------------------
@@ -84,24 +84,21 @@ sub = {
         "two": 22,
         "three": 23
       }
-match = []
-ct.locateTree(sub, tstData, match)
+match = ct.locateTree(sub, tstData)
 print (',"locateTree1":{}'.format(json.dumps(list(match))), file = outFile)
 
 sub = {
         "three": 23,
         "four": 25
       }
-match = []
-ct.locateTree(sub, tstData, match)
+match = ct.locateTree(sub, tstData)
 print (',"locateTree2":{}'.format(json.dumps(list(match))), file = outFile)
 
 sub = {
         "three": 24,
         "four": 25
       }
-match = []
-ct.locateTree(sub, tstData, match)
+match = ct.locateTree(sub, tstData)
 print (',"locateTree3":{}}}'.format(json.dumps(list(match))), file = outFile)
 
 # --------------------------------------------

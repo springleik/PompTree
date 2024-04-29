@@ -6,6 +6,7 @@ import json, sys, math
 # ---------------- Library Functions ---------------- #
 # locate key in data
 # return generator for value
+# may return multiple values in a list
 def locateKey(key, data):
     if isinstance(data, dict):
         if key in data: yield data[key]
@@ -18,6 +19,7 @@ def locateKey(key, data):
 # --------------------------------------------------- #
 # locate key-value pair in data
 # return generator for containing object
+# may return multiple objects in a list
 def locatePair(key, value, data):
     if isinstance(data, dict):
         if (key in data) and (data[key] == value): yield data
@@ -29,9 +31,12 @@ def locatePair(key, value, data):
 
 # --------------------------------------------------- #
 # recursively test JSON tree structures for equality
-# return true if matched, false if not
+# returns true if matched, false if not
 # pass in an error list to obtain detailed report
-def treeCompare (ref, tst, error = [], path = []):
+# do not pass in a path list, the error list contains path info 
+def treeCompare (ref, tst, error = None, path = None):
+    if error is None: error = []
+    if path is None: path = []
     # try to match dictionary keys
     if isinstance (ref, dict) and isinstance (tst, dict):
         if len(tst) < len(ref):
@@ -78,8 +83,9 @@ def leafCompare (ref, tst, error, path):
 
 # --------------------------------------------------- #
 # locate instances of a subtree by recursive descent
-# return list of matches
-def locateTree(sub, data, match = []):
+# returns a list of matches
+def locateTree(sub, data, match = None):
+    if match is None: match = []
     # check for match at current level
     if treeCompare (sub, data): match.append(data)
 
