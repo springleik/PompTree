@@ -1,7 +1,7 @@
 # PompTree
 Python3 code generator _PompTree.py_ randomly creates JSON test cases, as described at http://www.williamsonic.com/CompTree/index.html. Branch nodes are created according to parameters set inside the program, while leaf nodes are created according to the text file _Pleaf.txt_. Everything is adjustable, so the output can be steered and constrained according to your needs. Leaf values are pulled line-by-line from the leaf file, but don't have to be simple types. The leaf file can also contain valid composite structures if each structure is on one line, which are then placed in arrays and dictionaries in the output. Console output can be redirected to a JSON file for further processing.
 
-Also included is a Python3 program _CompareTree.py_ which performs an asymmetric directional tree comparison on two JSON files. The files are loaded into memory using Python's _json_ library, by invoking the program on a command line with two arguments representing the reference file and the test file. They are then traversed by recursive descent to check for equality, by the following rules:
+Also included is a Python3 program _CompTree.py_ which performs an asymmetric directional tree comparison on two JSON files. The files are loaded into memory using Python's _json_ library, by invoking the program on a command line with two arguments representing the reference file and the test file. They are then traversed by recursive descent to check for equality, by the following rules:
 
 * Any dictionary in the test file must have all of the keys in the corresponding dictionary in the reference file.
     * Order is ignored. Dictionaries in the files being compared can have a completely different ordering, and still test as equal.
