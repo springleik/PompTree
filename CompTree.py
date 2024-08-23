@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # CompTree.py directional JSON tree comparison
+# https://github.com/springleik/PompTree/edit/master/CompTree.py
 # M. Williamsen  26 November 2023
 import json, sys, math
 
