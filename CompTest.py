@@ -105,4 +105,4 @@ print (',"locateTree3":{}}}'.format(json.dumps(list(match))), file = outFile)
 # Compare test output file with reference file
 # Test passes if console shows an empty array
 outFile.close()
-os.system('python3 CompTree.py Ref.json Tst.json')
+os.system('python CompTree.py Ref.json Tst.json')
