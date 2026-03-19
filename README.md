@@ -15,6 +15,7 @@ Also included is a Python3 program _CompTree.py_ which performs an asymmetric di
 * Floats must have the same value, sign, and exponent.
     * Floats with the value Infinity in the reference file must have a corresponding Infinity in the test file. Sign is not considered in this comparison.
     * Floats with the value NaN in the reference file must have a corresponding NaN in the test file.
+    * An optional third argument can be used to set an error delta. If used, float values will be considered as equal if the absolute value of their difference is less than the error delta value.
 * Booleans must either be both True, or both False.
 * Text strings must be an exact case-sensitive match, including white space and escape characters inside the string.
     * White space outside of text strings is ignored. The two files being compared can have a completely different formatting in terms of white space, and still test as equal.
