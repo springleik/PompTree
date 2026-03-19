@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 # CompTree.py directional JSON tree comparison
-# https://github.com/springleik/PompTree/blob/master/CompTree.py
+# https://github.com/springleik/PompTree
 # M. Williamsen  26 November 2023
 
 import json, sys, math
+
+# global error delta value for floats
+errorDelta = 0.0
 
 # ---------------- Library Functions ---------------- #
 # locate key in data
@@ -93,6 +96,8 @@ def treeCompare (ref, tst, error = None, path = None) -> bool:
 # helper function for treeCompare
 def leafCompare (ref, tst, error, path) -> bool:
     if ref == tst: return True
+    elif isinstance (ref, float) and isinstance (tst, float): 
+        if abs (ref - tst) < errorDelta: return True
     error.append ({'valErr':[ref, tst],'path':path})
     return False
 
@@ -137,6 +142,8 @@ def compareTrees (refFileName, tstFileName) -> int:
     
 # ---------------- Main Entry Point ---------------- #
 def main() -> int:
+    global errorDelta
+    
     # check command line args, expect two file names
     refFileName = 'Ref.json'
     tstFileName = 'Tst.json'
@@ -145,8 +152,13 @@ def main() -> int:
         refFileName = args[1]
         tstFileName = args[2]
     else:
-        print ('Usage: python3 TreeCompare.py Ref.json Tst.json', file = sys.stderr)
+        print ('Usage: python3 TreeCompare.py Ref.json Tst.json [errorDelta]', file = sys.stderr)
         return -2
+
+    # check for third argument specifying delta for number compare
+    if 3 < len(args):
+        errorDelta = float (args[3])
+
     return compareTrees (refFileName, tstFileName)
     
 # ------------------------------------------- #
