@@ -22,7 +22,7 @@ try:
 except ValueError as e:
     print ('Ref file {} is not valid JSON'.format(refFileName), file = sys.stderr)
     sys.exit (-1)
-    
+
 try:
     outFileName = 'Tst.json'
     outFile = open(outFileName, 'w')
@@ -35,6 +35,10 @@ print ('{{"timestamp":"{}"'.format(datetime.datetime.now()), file = outFile)
 
 # --------------------------------------------
 # treeCompare
+
+# set delta for floating point numbers
+ct.errorDelta = 1e-3
+
 errors = []
 print (ct.treeCompare(tstData, refData, errors))
 print (',"treeCompare1":{}'.format(json.dumps(errors)), file = outFile)
@@ -105,4 +109,4 @@ print (',"locateTree3":{}}}'.format(json.dumps(list(match))), file = outFile)
 # Compare test output file with reference file
 # Test passes if console shows an empty array
 outFile.close()
-os.system('python CompTree.py Ref.json Tst.json')
+os.system('python3 CompTree.py Ref.json Tst.json')
