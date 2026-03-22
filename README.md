@@ -13,7 +13,6 @@ Also included is a Python3 program _CompTree.py_ which performs an asymmetric di
 * Each element in an array in the reference file must be equal to the corresponding element in the test file, according to these rules.
 * Integers must have the same value and sign.
 * Floats must have the same value, sign, and exponent.
-    * An optional third argument can be used to set an error delta. If used, float values will be considered as equal if the absolute value of their difference is less than the error delta.
     * Floats with the value Infinity in the reference file must have a corresponding Infinity in the test file. Sign is not considered in this comparison.
     * Floats with the value NaN in the reference file must have a corresponding NaN in the test file.
     * An optional third argument can be used to set an error delta. If used, float values will be considered as equal if the absolute value of their difference is less than the error delta value.
