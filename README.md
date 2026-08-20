@@ -23,11 +23,54 @@ Also included is a Python3 program _CompTree.py_ which performs an asymmetric di
 
 Performing a directional comparison is important when comparing test outputs with reference files, so that the test files can include additional comments, annotation, and instrumentation. Additionally, items you don't want to compare (timestamps, sequence numbers that change often, analog values such as voltage or temperature, etc.) can be ignored in the comparison by removing them from the reference file. The test file can then have varying values for these items and still be considered as equal, in order to pass a regression test for instance. An interesting question is whether to include version info for the software under test. If you leave version info in, then you'll have to touch the reference file each time you test a new version. If you actually need an exact match in both directions, simply test the files twice, reversing their order so both are evaluated as test files. If both comparisons are True, then both files have exactly the same dictionary keys and array elements.
 
-Some simple JSON files _a.json_ and _b.json_ are placed here to show how the comparison works. Either can be used as test or reference. If the same file is both test and reference, then the comparison will be True. The file _a.json_ has an extra array element, and the file _b.json_ has an extra dictionary key. So any comparison involving both files should be False. File comparison output to _stdout_ is either an empty JSON array if the files are a match, or a JSON array populated with error objects if the files don't match. Error objects contain a description of each error, and the path from the root node to the error location. An errorlevel is also returned which is zero if files match. A non-zero errorlevel is returned if the files mismatch, or if the input files don't both contain valid JSON text. The CompareTree program includes a _main_() function and is set up to be imported as a library if you just want to use the comparison function. Several utility functions are also included.
+Some simple JSON files _a.json_ and _b.json_ are placed here to show how the comparison works. Either can be used as test or reference. If the same file is both test and reference, then the comparison will be True. The file _a.json_ has an extra array element, and the file _b.json_ has an extra dictionary key. So any comparison involving both files should be False. File comparison output to _stdout_ is either an empty JSON array if the files are a match, or a JSON array populated with error objects if the files don't match. Error objects contain a description of each error, and the path from the root node to the error location. Let's take a look at what this looks like, in the following console output from a MacOS terminal window. It works the same way on Linux and Windows with minor changes to syntax.
+
+```
+MarksiMac:Projects williamm$ cd PompTree/TestFiles/
+MarksiMac:TestFiles williamm$ python3 ../CompTree.py
+Usage: python3 TreeCompare.py Ref.json Tst.json [errorDelta]
+MarksiMac:TestFiles williamm$ python3 ../CompTree.py a.json a.json
+[]
+MarksiMac:TestFiles williamm$ python3 ../CompTree.py a.json b.json
+[
+  {
+    "listErr": 7,
+    "path": [
+      3
+    ]
+  }
+]
+MarksiMac:TestFiles williamm$ python3 ../CompTree.py b.json a.json
+[
+  {
+    "keyErr": "five",
+    "path": [
+      7,
+      "four",
+      "four",
+      "four"
+    ]
+  }
+]
+MarksiMac:TestFiles williamm$ python3 ../CompTree.py b.json b.json
+[]
+```
+
+After navigating to the _TestFiles_ directory we run _CompTree.py_ with no arguments to see some usae text. Then we try different combinations of _a.json_ and _b.json_ to look for differences. An errorlevel is also returned which is zero if files match. A non-zero errorlevel is returned if the files mismatch, or if the input files don't both contain valid JSON text. The CompareTree program includes a _main_() function and is set up to be imported as a library if you just want to use the comparison function. Several utility functions are also included.
 
 * _locateKey(key, data)_ Locate _key_ in _data_, return a generator for _key_'s value
 * _locatePair(key, value, data)_ Locate _key_/_value_ pair in _data_, return a generator for the containing object
 * _treeCompare(ref, tst, error = [])_ Recursively test JSON tree structures in _ref_ and _tst_ for equality. Return a true/false result, and optionally append details of each mismatch to the _error_ list.
 * _locateTree(sub, data)_ Locate instances of subtree _sub_, traversing containing tree _data_ by recursive descent. Returns a list of matches found
 
-Python3 program _CompareTest.py_ imports these functions, to show examples of their use. The console output from this program is a JSON array, which can be compared to previous results for regression testing. Typical results are saved in files _CompareRef.json_ and _CompareTest.json_.
+Python3 program _CompTest.py_ imports these functions, to show examples of their use. First some quick checks comparing test files _aa.json_ and _bb.json_ which should return _False_, _False_, _False_, and _True_. The a more detailed check of the various functions. The output from this check is a dictionary file _Tst.json_ which is compared to previous results in file _Ref.json_ for regression testing. Here is what the test looks like on the console.
+
+```
+MarksiMac:PompTree williamm$ rm Tst.json
+MarksiMac:PompTree williamm$ python3 CompTest.py
+False
+False
+False
+True
+[]
+```
