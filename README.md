@@ -56,14 +56,14 @@ MarksiMac:TestFiles williamm$ python3 ../CompTree.py b.json b.json
 []
 ```
 
-After navigating to the _TestFiles_ directory we run _CompTree.py_ with no arguments to see some usae text. Then we try different combinations of _a.json_ and _b.json_ to look for differences. An errorlevel is also returned which is zero if files match. A non-zero errorlevel is returned if the files mismatch, or if the input files don't both contain valid JSON text. The CompareTree program includes a _main_() function and is set up to be imported as a library if you just want to use the comparison function. Several utility functions are also included.
+After navigating to the _TestFiles_ directory we run _CompTree.py_ with no arguments to see some usage text. Then we try different combinations of _a.json_ and _b.json_ to look for differences. An errorlevel is also returned which is zero if files match. A non-zero errorlevel is returned if the files mismatch, or if the input files don't both contain valid JSON text. The CompareTree program includes a _main_() function and is set up to be imported as a library if you just want to use the comparison function. Several utility functions are also included.
 
 * _locateKey(key, data)_ Locate _key_ in _data_, return a generator for _key_'s value
 * _locatePair(key, value, data)_ Locate _key_/_value_ pair in _data_, return a generator for the containing object
 * _treeCompare(ref, tst, error = [])_ Recursively test JSON tree structures in _ref_ and _tst_ for equality. Return a true/false result, and optionally append details of each mismatch to the _error_ list.
 * _locateTree(sub, data)_ Locate instances of subtree _sub_, traversing containing tree _data_ by recursive descent. Returns a list of matches found
 
-Python3 program _CompTest.py_ imports these functions, to show examples of their use. First some quick checks comparing test files _aa.json_ and _bb.json_ which should return _False_, _False_, _False_, and _True_. The a more detailed check of the various functions. The output from this check is a dictionary file _Tst.json_ which is compared to previous results in file _Ref.json_ for regression testing. Here is what the test looks like on the console.
+Python3 program _CompTest.py_ imports these functions, to show examples of their use. First some quick checks comparing test files _aa.json_ and _bb.json_ which should return _False_, _False_, _False_, and _True_. Then a more detailed check is done of the various functions. The output from this check is a dictionary file _Tst.json_ which is compared to previous results in file _Ref.json_ for regression testing. Here is what the test looks like on the console, when it passes.
 
 ```
 MarksiMac:PompTree williamm$ rm Tst.json
